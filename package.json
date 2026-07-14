@@ -20,10 +20,10 @@
     "dashboard:dev": "npm --prefix dashboard run dev",
     "dashboard:build": "npm --prefix dashboard run build",
     "dashboard:test": "npm --prefix dashboard run test",
-    "test:integration": "dotenv -e .env.test -- npm run migration:run && dotenv -e .env.test -- jest --config jest.integration.config.js --runInBand",
-    "test:unit": "jest --config jest.unit.config.js",
+    "test:integration": "dotenv -e .env.test -- npm run migration:run && dotenv -e .env.test -- jest --config config/jest.integration.config.js --runInBand",
+    "test:unit": "jest --config config/jest.unit.config.js",
     "test:load": "k6 run tests/load/pedidos-load.js",
-    "lint": "eslint services tests",
+    "lint": "eslint --config config/eslint.config.mjs services tests",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down"
   },

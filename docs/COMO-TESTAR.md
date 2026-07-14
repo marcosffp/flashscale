@@ -45,7 +45,7 @@ npm --prefix dashboard run lint       # dashboard
 ### 1.2 Testes unitários
 
 ```bash
-npm run test:unit          # gateway/api/orchestrator (jest.unit.config.js)
+npm run test:unit          # gateway/api/orchestrator (config/jest.unit.config.js)
 npm run dashboard:test     # dashboard (vitest)
 ```
 

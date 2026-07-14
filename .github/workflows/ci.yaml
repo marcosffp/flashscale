@@ -115,7 +115,7 @@ jobs:
         run: npm run migration:run
 
       - name: Testes de integração
-        run: npx jest --config jest.integration.config.js --runInBand
+        run: npx jest --config config/jest.integration.config.js --runInBand
 
   build:
     name: Build (valida que builda, sem push)

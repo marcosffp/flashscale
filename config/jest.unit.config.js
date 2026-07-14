@@ -2,9 +2,8 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  rootDir: '.',
-  testMatch: ['<rootDir>/tests/integration/**/*.spec.ts'],
-  testTimeout: 30000,
+  rootDir: '..',
+  testMatch: ['<rootDir>/tests/unit/**/*.spec.ts'],
   transform: {
     '^.+\\.ts$': ['ts-jest', { isolatedModules: true }],
   },

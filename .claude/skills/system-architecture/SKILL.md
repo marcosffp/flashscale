@@ -14,7 +14,7 @@ Three NestJS services plus a React dashboard, deployed to Kubernetes:
 - **orchestrator** — reads cluster metrics via `@kubernetes/client-node`, exposes WebSocket, hosts the "kill pod" endpoint. 1–2 replicas.
 - **dashboard** — React, consumes the orchestrator's WebSocket in real time.
 
-Load balancing happens in two layers: **L4** (Service/kube-proxy) distributes across replicas of one service; **L7** (`gateway`) routes by route/business rule before traffic reaches L4. Full spec and rationale: [negocio.md](../../negocio.md).
+Load balancing happens in two layers: **L4** (Service/kube-proxy) distributes across replicas of one service; **L7** (`gateway`) routes by route/business rule before traffic reaches L4. Full spec and rationale: [negocio.md](../../docs/negocio.md).
 
 ---
 

@@ -26,8 +26,11 @@ tests/
   integration/         # concurrency tests — the most important tests in this repo
   load/                # k6 script with failing thresholds
 docs/
+  negocio.md           # full spec — source of truth, see below
+  ROTEIRO.md           # personal step-by-step build log
   plans/               # written by the plan-feature skill
   features/            # written by the feature-tracking skill (local board + per-feature files)
+config/                # eslint + jest configs (tsconfig stays at root, see below)
 .github/workflows/ci.yaml
 ```
 
@@ -47,7 +50,7 @@ docs/
 
 ## Reference document
 
-Full spec, architecture diagram, every resolved contradiction and every consciously-accepted trade-off: [negocio.md](./negocio.md). Kept in this repo — treat it as the source of truth over this file if they ever disagree.
+Full spec, architecture diagram, every resolved contradiction and every consciously-accepted trade-off: [negocio.md](./docs/negocio.md). Kept in this repo — treat it as the source of truth over this file if they ever disagree.
 
 ## Local-only workflow
 
