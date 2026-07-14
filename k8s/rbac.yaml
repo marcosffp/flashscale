@@ -1,0 +1,37 @@
+# "delete" grants pod-delete for the "kill pod" button (negocio.md §5.1).
+# Kubernetes RBAC cannot filter this by label — the Role below grants delete
+# on ANY pod in the blackfriday namespace. The restriction to labelSelector
+# app=api is enforced only in code (ClusterService.killRandomApiPod), so a
+# bug in that filter (or a future manual call with this same credential)
+# could still delete postgres or gateway at the infra level. This is a
+# declared residual risk, not fully closed — see negocio.md §5.1 for the two
+# documented next steps (dedicated namespace, or accept as-is for the MVP).
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: orchestrator-sa
+  namespace: blackfriday
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: blackfriday
+  name: orchestrator-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: orchestrator-rolebinding
+  namespace: blackfriday
+subjects:
+  - kind: ServiceAccount
+    name: orchestrator-sa
+    namespace: blackfriday
+roleRef:
+  kind: Role
+  name: orchestrator-role
+  apiGroup: rbac.authorization.k8s.io

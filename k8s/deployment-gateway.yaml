@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: blackfriday
+  labels:
+    app: gateway
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      # Etapa 10: 30s pra terminar requisições em voo + os 5s de preStop
+      # abaixo antes do SIGTERM chegar no processo Node.
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: gateway
+          image: flashscale-gateway:local
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: blackfriday-config
+          env:
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: blackfriday-secrets
+                  key: JWT_SECRET
+          lifecycle:
+            preStop:
+              # Dá tempo do endpoint sair do Service (kube-proxy/EndpointSlice)
+              # antes do SIGTERM, pra nenhuma requisição nova ser roteada pro
+              # pod que já está terminando.
+              exec:
+                command: ["sh", "-c", "sleep 5"]
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

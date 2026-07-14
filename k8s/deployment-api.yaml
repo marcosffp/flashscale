@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: blackfriday
+  labels:
+    app: api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      # Etapa 10: 30s pra terminar requisições em voo + os 5s de preStop
+      # abaixo antes do SIGTERM chegar no processo Node.
+      terminationGracePeriodSeconds: 30
+      initContainers:
+        - name: migrate
+          image: flashscale-api:local
+          imagePullPolicy: Never
+          command: ["npm", "run", "migration:run"]
+          envFrom:
+            - configMapRef:
+                name: blackfriday-config
+          env:
+            # Migration roda através do PgBouncer igual ao container
+            # principal (DB_HOST/DB_PORT vêm do configmap). Cada migration
+            # do TypeORM já é uma única transação (BEGIN...COMMIT), que é
+            # exatamente a unidade que transaction pooling sabe segurar
+            # numa mesma conexão física — não precisa de bypass.
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: blackfriday-secrets
+                  key: POSTGRES_PASSWORD
+      containers:
+        - name: api
+          image: flashscale-api:local
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3001
+          envFrom:
+            - configMapRef:
+                name: blackfriday-config
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: blackfriday-secrets
+                  key: POSTGRES_PASSWORD
+          lifecycle:
+            preStop:
+              # Dá tempo do endpoint sair do Service (kube-proxy/EndpointSlice)
+              # antes do SIGTERM, pra nenhuma requisição nova ser roteada pro
+              # pod que já está terminando.
+              exec:
+                command: ["sh", "-c", "sleep 5"]
+          readinessProbe:
+            tcpSocket:
+              port: 3001
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

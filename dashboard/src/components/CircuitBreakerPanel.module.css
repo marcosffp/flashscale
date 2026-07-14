@@ -1,0 +1,83 @@
+.panel {
+  background: linear-gradient(165deg, var(--surface-2), var(--surface-1));
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem 1.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  box-shadow: var(--shadow-sm), var(--inset-highlight);
+}
+
+.icon {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  border: 1px solid rgba(224, 149, 79, 0.2);
+  color: var(--copper);
+}
+
+.icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.label {
+  font-weight: 500;
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+}
+
+.badge {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.74rem;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  font-weight: 550;
+  letter-spacing: 0.01em;
+  border: 1px solid transparent;
+}
+
+.badgeDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.estadoFechado {
+  background: var(--status-good-bg);
+  color: var(--status-good-fg);
+  border-color: rgba(140, 203, 146, 0.25);
+}
+
+.estadoFechado .badgeDot {
+  box-shadow: 0 0 6px 0 currentColor;
+}
+
+.estadoAberto {
+  background: var(--status-critical-bg);
+  color: var(--status-critical-fg);
+  border-color: rgba(226, 136, 112, 0.3);
+}
+
+.estadoMeioAberto {
+  background: var(--status-warning-bg);
+  color: var(--status-warning-fg);
+  border-color: rgba(231, 181, 104, 0.3);
+}
+
+.estadoDesconhecido {
+  background: var(--status-neutral-bg);
+  color: var(--status-neutral-fg);
+  border-color: var(--border);
+}

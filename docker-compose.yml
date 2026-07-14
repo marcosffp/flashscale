@@ -1,0 +1,84 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: flashscale-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: flashscale
+      POSTGRES_PASSWORD: flashscale
+      POSTGRES_DB: flashscale
+    ports:
+      - "5432:5432"
+    volumes:
+      - flashscale-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U flashscale -d flashscale"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres-test:
+    image: postgres:16-alpine
+    container_name: flashscale-postgres-test
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: flashscale
+      POSTGRES_PASSWORD: flashscale
+      POSTGRES_DB: flashscale_test
+    ports:
+      - "5433:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U flashscale -d flashscale_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Etapa 10 (negocio.md §7.5): api/gateway conectam no Postgres através do
+  # PgBouncer em transaction pooling, não direto. Migrations passam pelo
+  # mesmo caminho — cada migration do TypeORM já é uma única transação
+  # (BEGIN...COMMIT), a unidade que transaction pooling sabe segurar numa
+  # mesma conexão física, então não precisa de bypass.
+  pgbouncer:
+    image: edoburu/pgbouncer:1.21.0-p2
+    container_name: flashscale-pgbouncer
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: flashscale
+      DB_PASSWORD: flashscale
+      DB_NAME: flashscale
+      POOL_MODE: transaction
+      AUTH_TYPE: scram-sha-256
+      MAX_CLIENT_CONN: 100
+      DEFAULT_POOL_SIZE: 10
+    ports:
+      - "6432:5432"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  pgbouncer-test:
+    image: edoburu/pgbouncer:1.21.0-p2
+    container_name: flashscale-pgbouncer-test
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres-test
+      DB_PORT: 5432
+      DB_USER: flashscale
+      DB_PASSWORD: flashscale
+      DB_NAME: flashscale_test
+      POOL_MODE: transaction
+      AUTH_TYPE: scram-sha-256
+      MAX_CLIENT_CONN: 100
+      DEFAULT_POOL_SIZE: 10
+    ports:
+      - "6433:5432"
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+
+volumes:
+  flashscale-postgres-data:

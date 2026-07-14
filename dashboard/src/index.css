@@ -1,0 +1,119 @@
+:root {
+  color-scheme: dark;
+
+  /* ---------- Surfaces: neutral graphite, no hue wash ---------- */
+  --surface-0: #0b0b0d;
+  --surface-1: #0f1012;
+  --surface-2: #16171a;
+  --surface-3: #1d1e22;
+  --surface-raised: #1a1b1f;
+
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.11);
+  --border-hairline: rgba(255, 255, 255, 0.05);
+  --gridline: #232428;
+
+  /* ---------- Typography ---------- */
+  --text-primary: #f3f4f6;
+  --text-secondary: #a2a5ac;
+  --text-muted: #75787f;
+  --text-faint: #55575d;
+
+  /* ---------- Accent: copper — used only on components, never on surfaces ---------- */
+  --accent: #c17a3f;
+  --accent-strong: #e0954f;
+  --accent-soft: rgba(224, 149, 79, 0.12);
+  --accent-fg: #1a120b;
+  --copper: #d4915a;
+  --bronze: #a86a3c;
+  --sand: #e4c9a4;
+
+  /* ---------- Danger ---------- */
+  --danger: #b8503e;
+  --danger-strong: #d16b53;
+  --danger-soft: rgba(209, 107, 83, 0.12);
+
+  /* ---------- Status ---------- */
+  --status-good-bg: rgba(122, 199, 132, 0.1);
+  --status-good-fg: #7ac784;
+  --status-warning-bg: rgba(224, 173, 96, 0.1);
+  --status-warning-fg: #e0ad60;
+  --status-critical-bg: rgba(224, 130, 108, 0.1);
+  --status-critical-fg: #e0826c;
+  --status-neutral-bg: rgba(162, 165, 172, 0.08);
+  --status-neutral-fg: #a2a5ac;
+
+  /* ---------- Elevation & glow ---------- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 1px rgba(0, 0, 0, 0.24);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 16px 44px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.3);
+  --glow-accent: 0 0 0 1px rgba(224, 149, 79, 0.22), 0 0 20px rgba(224, 149, 79, 0.1);
+  --glow-good: 0 0 0 1px rgba(122, 199, 132, 0.25), 0 0 16px rgba(122, 199, 132, 0.1);
+  --glow-warning: 0 0 0 1px rgba(224, 173, 96, 0.25), 0 0 16px rgba(224, 173, 96, 0.1);
+  --glow-critical: 0 0 0 1px rgba(224, 130, 108, 0.28), 0 0 16px rgba(224, 130, 108, 0.12);
+  --inset-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+
+  --radius-sm: 7px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+
+  --font-sans:
+    'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display:
+    'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:
+    'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--surface-0);
+  background-image: radial-gradient(ellipse 1100px 620px at 50% -12%, rgba(255, 255, 255, 0.035), transparent 60%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-feature-settings: 'tnum' 1, 'ss01' 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button {
+  font-family: inherit;
+}
+
+::selection {
+  background: rgba(224, 149, 79, 0.28);
+  color: var(--text-primary);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surface-3);
+  border-radius: 999px;
+  border: 2px solid var(--surface-0);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2a2b30;
+}

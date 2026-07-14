@@ -1,0 +1,109 @@
+.panel {
+  background: linear-gradient(165deg, var(--surface-2), var(--surface-1));
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem 1.35rem;
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-sm), var(--inset-highlight);
+}
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.62rem 1.15rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(165deg, var(--danger-strong), var(--danger));
+  color: #fdf1ec;
+  font-weight: 550;
+  font-size: 0.86rem;
+  letter-spacing: -0.006em;
+  cursor: pointer;
+  flex: none;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.14) inset, var(--shadow-sm);
+  transition: transform 0.12s ease, box-shadow 0.2s ease, filter 0.15s ease;
+}
+
+.botaoIcon {
+  display: inline-flex;
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+
+.botaoIcon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.botao:hover:not(:disabled) {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset, var(--shadow-md), var(--glow-critical);
+}
+
+.botao:active:not(:disabled) {
+  transform: translateY(0);
+  filter: brightness(0.97);
+}
+
+.botao:focus-visible {
+  outline: 2px solid rgba(224, 130, 108, 0.55);
+  outline-offset: 2px;
+}
+
+.botao:disabled {
+  background: var(--surface-3);
+  color: var(--text-muted);
+  border-color: var(--border);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.botao:disabled .botaoIcon svg {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .botao:disabled .botaoIcon svg {
+    animation: none;
+  }
+}
+
+.sucesso {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--status-good-fg);
+  font-size: 0.85rem;
+}
+
+.sucesso svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+
+.erro {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--status-critical-fg);
+  font-size: 0.85rem;
+}
+
+.erro svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}

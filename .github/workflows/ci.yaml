@@ -1,0 +1,150 @@
+# negocio.md §7.2 — pipeline mínimo, mas real: lint + testes (com Postgres de
+# serviço) + build das imagens Docker (sem push). Deploy automatizado fica de
+# fora do MVP porque o cluster é local/efêmero (Minikube/Kind).
+name: CI
+
+on:
+  push:
+  pull_request:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  lint:
+    name: Lint (eslint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Instalar dependências (gateway/api/orchestrator)
+        run: npm ci
+
+      - name: Lint dos 3 serviços NestJS
+        run: npm run lint
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+
+      - name: Instalar dependências (dashboard)
+        working-directory: dashboard
+        run: npm ci
+
+      - name: Lint do dashboard
+        working-directory: dashboard
+        run: npm run lint
+
+  test-unit:
+    name: Testes unitários
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Instalar dependências (gateway/api/orchestrator)
+        run: npm ci
+
+      - name: Testes unitários (gateway/api/orchestrator)
+        run: npm run test:unit
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+
+      - name: Instalar dependências (dashboard)
+        working-directory: dashboard
+        run: npm ci
+
+      - name: Testes do dashboard
+        working-directory: dashboard
+        run: npm run test
+
+  test-integration:
+    name: Testes de integração (concorrência de estoque + idempotência)
+    runs-on: ubuntu-latest
+    # Postgres de serviço (negocio.md §7.2) — os testes mais importantes do
+    # repo rodam aqui: se alguém remover o `WHERE estoque_disponivel >=
+    # :quantidade` ou trocar o `ON CONFLICT` por `SELECT`+`INSERT`, é este
+    # job que quebra.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: flashscale
+          POSTGRES_PASSWORD: flashscale
+          POSTGRES_DB: flashscale_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U flashscale -d flashscale_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: flashscale
+      DB_PASSWORD: flashscale
+      DB_NAME: flashscale_test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Rodar migrations
+        run: npm run migration:run
+
+      - name: Testes de integração
+        run: npx jest --config jest.integration.config.js --runInBand
+
+  build:
+    name: Build (valida que builda, sem push)
+    runs-on: ubuntu-latest
+    needs: [lint, test-unit, test-integration]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Build TypeScript (gateway/api/orchestrator)
+        run: |
+          npm ci
+          npm run build
+
+      - name: Build do dashboard
+        working-directory: dashboard
+        run: |
+          npm ci
+          npm run build
+
+      - name: Build da imagem Docker — gateway
+        run: docker build -f services/gateway/Dockerfile -t flashscale-gateway:ci .
+
+      - name: Build da imagem Docker — api
+        run: docker build -f services/api/Dockerfile -t flashscale-api:ci .
+
+      - name: Build da imagem Docker — orchestrator
+        run: docker build -f services/orchestrator/Dockerfile -t flashscale-orchestrator:ci .

@@ -1,0 +1,665 @@
+.clusterFrame {
+  position: relative;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  background: var(--surface-1);
+  box-shadow: var(--shadow-lg), var(--inset-highlight);
+  padding: 1.35rem 1.5rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  overflow: hidden;
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.clusterFrame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(var(--gridline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--gridline) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.16;
+  mask-image: radial-gradient(ellipse 100% 100% at 50% 0%, black 35%, transparent 85%);
+  pointer-events: none;
+}
+
+.clusterFrameActive {
+  border-color: rgba(224, 149, 79, 0.4);
+  box-shadow: var(--shadow-lg), var(--glow-accent);
+}
+
+/* ---------- Cluster header ---------- */
+
+.clusterHeader {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.k8sIcon {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: linear-gradient(155deg, var(--surface-3), var(--surface-2));
+  border: 1px solid var(--border-strong);
+  color: var(--copper);
+  box-shadow: var(--shadow-sm), var(--inset-highlight);
+}
+
+.k8sIcon svg {
+  width: 21px;
+  height: 21px;
+  animation: spin 7s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+.clusterTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+
+.clusterSubtitle {
+  margin: 0.2rem 0 0;
+  font-size: 0.78rem;
+  font-weight: 450;
+  color: var(--text-muted);
+}
+
+.headerBadges {
+  margin-left: auto;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.trafficBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent-fg);
+  background: linear-gradient(155deg, var(--accent-strong), var(--accent));
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  box-shadow: var(--glow-accent);
+  animation: badgeIn 0.3s ease-out;
+}
+
+.trafficBadge svg {
+  width: 11px;
+  height: 11px;
+}
+
+.liveBadge {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--status-good-fg);
+  background: var(--status-good-bg);
+  border: 1px solid rgba(122, 199, 132, 0.16);
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+}
+
+.liveBadgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--status-good-fg);
+  box-shadow: 0 0 8px 1px rgba(140, 203, 146, 0.6);
+  animation: breathe 1.8s ease-in-out infinite;
+}
+
+/* ---------- Kill toast ---------- */
+
+.killToast {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid rgba(224, 130, 108, 0.3);
+  background: var(--status-critical-bg);
+  color: var(--status-critical-fg);
+  border-radius: var(--radius-md);
+  padding: 0.6rem 0.9rem;
+  font-size: 0.82rem;
+  box-shadow: var(--glow-critical);
+  animation: toastLife 2.6s ease-in-out forwards;
+}
+
+.killToast svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.killToast strong {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+/* ---------- Control plane (Orchestrator) ---------- */
+
+.controlPlane {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  box-shadow: var(--inset-highlight);
+  padding: 0.85rem 1.1rem;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.radarIcon {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--surface-3);
+  border: 1px solid var(--border-strong);
+  color: var(--copper);
+}
+
+.radarIcon svg {
+  width: 22px;
+  height: 22px;
+  animation: spin 3s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+.controlPlaneLabel {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.controlPlaneTag {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--copper);
+  background: var(--accent-soft);
+  border: 1px solid rgba(224, 149, 79, 0.18);
+  padding: 0.14rem 0.5rem;
+  border-radius: 999px;
+}
+
+.controlPlaneDescription {
+  margin: 0.2rem 0 0;
+  font-size: 0.77rem;
+  font-weight: 450;
+  color: var(--text-muted);
+  max-width: 60ch;
+  line-height: 1.45;
+}
+
+.controlPlane .podGrid {
+  margin-left: auto;
+  flex: none;
+  max-width: 140px;
+  justify-content: flex-end;
+}
+
+/* ---------- Data plane ---------- */
+
+.dataPlaneLabel {
+  position: relative;
+  margin: 0;
+  font-size: 0.67rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
+}
+
+.flow {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 0.6rem;
+  min-width: max-content;
+}
+
+@media (max-width: 720px) {
+  .flow {
+    flex-direction: column;
+    min-width: 0;
+  }
+}
+
+.node {
+  position: relative;
+  flex: 1 1 180px;
+  min-width: 168px;
+  background: linear-gradient(165deg, var(--surface-3), var(--surface-2));
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.05rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  box-shadow: var(--shadow-sm), var(--inset-highlight);
+  transition: box-shadow 0.35s ease, border-color 0.35s ease, transform 0.35s ease;
+}
+
+.nodeActive {
+  border-color: rgba(224, 149, 79, 0.4);
+  box-shadow: var(--shadow-md), var(--glow-accent);
+}
+
+.nodeFlash {
+  animation: nodeFlash 2.6s ease-out;
+}
+
+.nodeHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.nodeIcon {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  border: 1px solid rgba(224, 149, 79, 0.2);
+  color: var(--copper);
+}
+
+.nodeIcon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.nodeLabel {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.93rem;
+  letter-spacing: -0.005em;
+}
+
+.nodeDescription {
+  margin: 0.18rem 0 0;
+  font-size: 0.76rem;
+  font-weight: 450;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* ---------- Capacity bar (visual HPA cue) ---------- */
+
+.capacityBar {
+  display: flex;
+  gap: 3px;
+}
+
+.capacitySlot {
+  flex: 1;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--surface-1);
+}
+
+.capacitySlotReady {
+  background: var(--status-good-fg);
+  box-shadow: 0 0 6px 0 rgba(140, 203, 146, 0.45);
+}
+
+.capacitySlotPending {
+  background: transparent;
+  border: 1px dashed var(--status-warning-fg);
+}
+
+/* ---------- Pods ---------- */
+
+.podGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-height: 22px;
+}
+
+.podChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px 3px 6px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: var(--surface-1);
+  box-shadow: var(--inset-highlight);
+  animation: podPop 0.4s ease-out;
+}
+
+.podChipDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.podChipLabel {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+
+.chipGood {
+  border-color: rgba(140, 203, 146, 0.32);
+}
+
+.chipGood .podChipDot {
+  background: var(--status-good-fg);
+  box-shadow: 0 0 6px 0 rgba(140, 203, 146, 0.55);
+  animation: breathe 2.4s ease-in-out infinite;
+}
+
+.chipWarning {
+  border-color: rgba(231, 181, 104, 0.38);
+}
+
+.chipWarning .podChipDot {
+  background: var(--status-warning-fg);
+  animation: pulse 1.1s ease-in-out infinite;
+}
+
+.chipCritical {
+  border-color: rgba(226, 136, 112, 0.38);
+}
+
+.chipCritical .podChipDot {
+  background: var(--status-critical-fg);
+  animation: pulse 1.1s ease-in-out infinite;
+}
+
+.chipNeutral .podChipDot {
+  background: var(--text-muted);
+}
+
+.podEmpty {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px dashed var(--text-faint);
+}
+
+/* ---------- Animations ---------- */
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(140, 203, 146, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(140, 203, 146, 0);
+  }
+}
+
+@keyframes podPop {
+  0% {
+    transform: scale(0.55);
+    opacity: 0;
+  }
+  65% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes travel {
+  0% {
+    left: -3px;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes badgeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes toastLife {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  10%,
+  82% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes nodeFlash {
+  0% {
+    border-color: rgba(226, 136, 112, 0.7);
+    box-shadow: var(--shadow-md), var(--glow-critical);
+  }
+  70% {
+    border-color: rgba(226, 136, 112, 0.45);
+    box-shadow: var(--shadow-md), var(--glow-critical);
+  }
+  100% {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-sm), var(--inset-highlight);
+  }
+}
+
+@keyframes endpointPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(224, 149, 79, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(224, 149, 79, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .k8sIcon svg,
+  .radarIcon svg,
+  .liveBadgeDot,
+  .chipGood .podChipDot,
+  .chipWarning .podChipDot,
+  .chipCritical .podChipDot,
+  .podChip,
+  .flowDot,
+  .nodeFlash,
+  .killToast,
+  .trafficBadge,
+  .endpointIconPulse {
+    animation: none;
+  }
+}
+
+/* ---------- Endpoints & connectors ---------- */
+
+.endpoint {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  color: var(--text-muted);
+  min-width: 56px;
+}
+
+.endpointIcon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.endpointIconPulse {
+  border-color: rgba(224, 149, 79, 0.4);
+  color: var(--copper);
+  animation: endpointPulse 1.4s ease-in-out infinite;
+}
+
+.endpointIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.endpointLabel {
+  font-size: 0.72rem;
+  font-weight: 450;
+  white-space: nowrap;
+}
+
+.connector {
+  flex: 1 1 32px;
+  min-width: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  color: var(--text-muted);
+}
+
+.connectorLabel {
+  font-size: 0.62rem;
+  font-weight: 550;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--copper);
+  text-align: center;
+  line-height: 1.2;
+  max-width: 84px;
+}
+
+.connectorLineRow {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.connectorLine {
+  position: relative;
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gridline) 15%, var(--gridline) 85%, transparent);
+}
+
+.connectorLineActive {
+  background: linear-gradient(90deg, transparent, rgba(224, 149, 79, 0.55) 15%, rgba(224, 149, 79, 0.55) 85%, transparent);
+}
+
+.flowDot {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-strong);
+  box-shadow: 0 0 5px 1px rgba(224, 149, 79, 0.75);
+  animation-name: travel;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.arrow {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  margin-left: -2px;
+}
+
+@media (max-width: 720px) {
+  .connector {
+    min-width: 0;
+    padding: 0.35rem 0;
+  }
+
+  .connectorLineRow {
+    width: 60%;
+  }
+
+  .arrow {
+    transform: rotate(90deg);
+  }
+
+  .controlPlane .podGrid {
+    max-width: none;
+    justify-content: flex-start;
+  }
+}

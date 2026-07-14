@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgbouncer
+  namespace: blackfriday
+  labels:
+    app: pgbouncer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgbouncer
+  template:
+    metadata:
+      labels:
+        app: pgbouncer
+    spec:
+      containers:
+        - name: pgbouncer
+          image: edoburu/pgbouncer:1.21.0-p2
+          ports:
+            - containerPort: 6432
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: blackfriday-config
+                  key: DB_DIRECT_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: blackfriday-config
+                  key: DB_DIRECT_PORT
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: blackfriday-config
+                  key: DB_USER
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: blackfriday-config
+                  key: DB_NAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: blackfriday-secrets
+                  key: POSTGRES_PASSWORD
+            - name: POOL_MODE
+              value: transaction
+            - name: AUTH_TYPE
+              value: scram-sha-256
+            - name: LISTEN_PORT
+              value: "6432"
+            # §7.5: 8 réplicas de api × pool TypeORM (extra.max: 5) = 40
+            # conexões de cliente esperadas no PgBouncer; máximo com folga
+            # pra orchestrator e admin. default_pool_size multiplexa isso
+            # pra um pool bem menor no Postgres real.
+            - name: MAX_CLIENT_CONN
+              value: "100"
+            - name: DEFAULT_POOL_SIZE
+              value: "10"
+          readinessProbe:
+            tcpSocket:
+              port: 6432
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 6432
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi

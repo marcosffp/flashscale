@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blackfriday-config
+  namespace: blackfriday
+data:
+  # Etapa 10 (negocio.md §7.5): api fala com o Postgres através do
+  # PgBouncer (transaction pooling), não direto.
+  DB_HOST: "pgbouncer"
+  DB_PORT: "6432"
+  # Alvo real do Postgres — usado só pelo próprio PgBouncer como upstream
+  # (deployment-pgbouncer.yaml). api/orchestrator nunca leem essas duas.
+  DB_DIRECT_HOST: "postgres"
+  DB_DIRECT_PORT: "5432"
+  DB_USER: "flashscale"
+  DB_NAME: "flashscale"
+  PORT: "3001"
+  GATEWAY_PORT: "3000"
+  JWT_EXPIRES_IN: "15m"
+  API_BASE_URL: "http://api:3001"
